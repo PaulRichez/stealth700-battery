@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stealth700-battery"
+version = "0.1.0"
+description = "Read a Turtle Beach Stealth 700 Gen 3 battery level over USB, without Swarm II."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+keywords = ["turtle-beach", "stealth-700", "battery", "hid", "airoha", "race", "coap"]
+dependencies = ["hidapi>=0.14"]
+
+[project.scripts]
+stealth700-battery = "stealth700_battery.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/your-username/stealth700-battery"
+
+[tool.setuptools.packages.find]
+where = ["src"]
