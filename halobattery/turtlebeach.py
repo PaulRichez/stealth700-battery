@@ -148,7 +148,11 @@ class TurtleBeachProvider(Provider):
         doc = self._get_gsi(info["path"])
         kvp = (doc or {}).get("KVP", {})
 
-        name = kvp.get(KEY_NAME) or self._last_name
+        # Prefer the transmitter's real USB product string (e.g. "Stealth 700X
+        # Gen 3") over the on-device nickname (GSI key 220), which defaults to the
+        # generic "My Headset".
+        product = (info.get("product_string") or "").strip()
+        name = product or kvp.get(KEY_NAME) or self._last_name
         self._last_name = name
 
         level: Optional[int] = None

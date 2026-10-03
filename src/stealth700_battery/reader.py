@@ -103,20 +103,20 @@ def _race(cmd_id: int, payload: bytes = b"") -> bytes:
                   cmd_id & 0xFF, (cmd_id >> 8) & 0xFF]) + payload
 
 
-def find_transmitter_path() -> Optional[bytes]:
-    """Return the HID path of the RACE vendor collection, or None if absent."""
+def _find_transmitter():
+    """Return (path, product_name) for the RACE vendor collection, or (None, "")."""
     for info in hid.enumerate(VENDOR_ID, 0):
         if info.get("usage_page") == RACE_USAGE_PAGE and info.get("usage") == RACE_USAGE:
-            return info["path"]
-    return None
+            # The USB product string is the real model, e.g. "Stealth 700X Gen 3".
+            product = (info.get("product_string") or "").strip()
+            name = product or TRANSMITTER_PIDS.get(info.get("product_id"), "Turtle Beach headset")
+            return info["path"], name
+    return None, ""
 
 
-def _transmitter_name() -> str:
-    for info in hid.enumerate(VENDOR_ID, 0):
-        pid = info.get("product_id")
-        if pid in TRANSMITTER_PIDS:
-            return TRANSMITTER_PIDS[pid]
-    return "Turtle Beach headset"
+def find_transmitter_path() -> Optional[bytes]:
+    """Return the HID path of the RACE vendor collection, or None if absent."""
+    return _find_transmitter()[0]
 
 
 class _Channel:
@@ -179,7 +179,7 @@ def read_status() -> Optional[HeadsetStatus]:
     A present transmitter with the headset switched off returns a status with
     ``connected=False`` and the last known battery level.
     """
-    path = find_transmitter_path()
+    path, product_name = _find_transmitter()
     if path is None:
         return None
 
@@ -200,7 +200,9 @@ def read_status() -> Optional[HeadsetStatus]:
     except (TypeError, ValueError):
         return None
 
-    name = kvp.get(KEY_NAME) or _transmitter_name()
+    # Prefer the transmitter's real USB product string over the on-device
+    # nickname (GSI key 220), which defaults to the generic "My Headset".
+    name = product_name or kvp.get(KEY_NAME) or "Turtle Beach headset"
     return HeadsetStatus(
         name=name,
         battery=max(0, min(100, battery)),
