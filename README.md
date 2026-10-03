@@ -1,11 +1,13 @@
-# stealth700-battery
+# halobattery-stealth700
 
-Read the battery level of a **Turtle Beach Stealth 700 Gen 3** headset straight
-from its USB wireless transmitter — **no Swarm II required**.
+A [HaloBattery](https://github.com/HeyOkay/HaloBattery) provider (and a
+standalone CLI/library) that reads the battery level of a **Turtle Beach Stealth
+700 Gen 3** headset straight from its USB wireless transmitter — **no Swarm II
+required**.
 
 ```console
 $ stealth700-battery
-My Headset: 100%
+Stealth 700X Gen 3: 100%
 ```
 
 Swarm II is the only official way to see this headset's battery on a PC, and it

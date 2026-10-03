@@ -16,7 +16,7 @@ dependencies = ["hidapi>=0.14"]
 stealth700-battery = "stealth700_battery.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/PaulRichez/stealth700-battery"
+Homepage = "https://github.com/PaulRichez/halobattery-stealth700"
 
 [tool.setuptools.packages.find]
 where = ["src"]
